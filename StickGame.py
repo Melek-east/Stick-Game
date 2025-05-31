@@ -57,7 +57,7 @@ def get_computer_move(sticks, difficulty):
         return sticks % 4 if sticks % 4 != 0 else random.randint(1, min(3, sticks))
 
 def play_with_computer():
-    """Play Nim against the computer with difficulty levels."""
+    """Play Stick Game against the computer with difficulty levels."""
     clear_screen()
     print("=== PLAY AGAINST COMPUTER ===")
     
@@ -105,7 +105,7 @@ def play_with_computer():
         user_turn = not user_turn
 
 def play_with_friend():
-    """Play Nim against a friend."""
+    """Play Stick Game against a friend."""
     clear_screen()
     print("=== PLAY AGAINST FRIEND ===")
     
@@ -136,7 +136,7 @@ def play_with_friend():
 def show_rules():
     """Display game rules."""
     clear_screen()
-    print("=== NIM GAME RULES ===")
+    print("=== STICK GAME RULES ===")
     print("1. The game starts with a pile of sticks.")
     print("2. Players take turns removing 1, 2, or 3 sticks.")
     print("3. The player who takes the last stick wins.")
@@ -150,7 +150,7 @@ def main():
     """Main game loop."""
     while True:
         clear_screen()
-        print("=== NIM GAME ===")
+        print("=== STICK GAME ===")
         print("1. Play against Computer")
         print("2. Play against Friend")
         print("3. Game Rules")
