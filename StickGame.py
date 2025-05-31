@@ -20,162 +20,186 @@ print('''{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{
 {}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}''')
 
 import random
-import os
 
-def clear_screen():
-    """Clear the console screen."""
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-def display_sticks(count):
-    """Display sticks with better visualization."""
-    print(f"\nSticks remaining: {count}")
-    print("🔴 " * count)
-    print("=" * 40)
-
-def get_valid_stick_count(prompt, max_sticks):
-    """Get valid stick count from user input."""
-    while True:
-        try:
-            count = int(input(prompt))
-            if 1 <= count <= 3 and count <= max_sticks:
-                return count
-            print(f"Invalid input. Choose 1-3 sticks (not more than {max_sticks} remaining).")
-        except ValueError:
-            print("Please enter a valid number.")
-
-def get_computer_move(sticks, difficulty):
-    """Get computer move based on difficulty level."""
-    if difficulty == "easy":
-        return random.randint(1, min(3, sticks))
-    elif difficulty == "medium":
-        # 70% chance of optimal move, 30% chance of random move
-        if random.random() < 0.7:
-            return sticks % 4 if sticks % 4 != 0 else random.randint(1, min(3, sticks))
-        else:
-            return random.randint(1, min(3, sticks))
-    else:  # hard
-        return sticks % 4 if sticks % 4 != 0 else random.randint(1, min(3, sticks))
-
-def play_with_computer():
-    """Play Stick Game against the computer with difficulty levels."""
-    clear_screen()
-    print("=== PLAY AGAINST COMPUTER ===")
-    
-    # Get number of sticks
-    while True:
-        try:
-            sticks = int(input("\nHow many sticks do you want to play with? "))
-            if sticks > 0:
-                break
-            print("Please enter a positive number of sticks.")
-        except ValueError:
-            print("Please enter a valid number.")
-    
-    # Get difficulty level
-    while True:
-        difficulty = input("\nChoose difficulty (easy/medium/hard): ").strip().lower()
-        if difficulty in ["easy", "medium", "hard"]:
-            break
-        print("Invalid choice. Please enter 'easy', 'medium', or 'hard'.")
-    
-    # Determine who goes first
-    choice = input("\nDo you want to go first? (yes/no): ").strip().lower()
-    user_turn = choice.startswith("y")
-    
-    display_sticks(sticks)
-    
-    while sticks > 0:
-        if user_turn:
-            human = get_valid_stick_count("Your turn. How many sticks do you want to remove? ", sticks)
-            sticks -= human
-            clear_screen()
-            print(f"You removed {human} stick(s).")
-            if sticks == 0:
-                print("\n🎉 You win! 🎉")
-                break
-            display_sticks(sticks)
-        else:
-            computer = get_computer_move(sticks, difficulty)
-            sticks -= computer
-            print(f"\nComputer removes {computer} stick(s).")
-            if sticks == 0:
-                print("\n😢 Computer wins! You lost. 😢")
-                break
-            display_sticks(sticks)
-        user_turn = not user_turn
-
-def play_with_friend():
-    """Play Stick Game against a friend."""
-    clear_screen()
-    print("=== PLAY AGAINST FRIEND ===")
-    
-    # Get number of sticks
-    while True:
-        try:
-            sticks = int(input("\nHow many sticks do you want to play with? "))
-            if sticks > 0:
-                break
-            print("Please enter a positive number of sticks.")
-        except ValueError:
-            print("Please enter a valid number.")
-
-    display_sticks(sticks)
-    
-    player = 1
-    while sticks > 0:
-        move = get_valid_stick_count(f"PLAYER {player}: How many sticks do you want to remove? ", sticks)
-        sticks -= move
-        clear_screen()
-        print(f"Player {player} removed {move} stick(s).")
-        if sticks == 0:
-            print(f"\n🎉 PLAYER {player} WINS! 🎉")
-            break
-        display_sticks(sticks)
-        player = 2 if player == 1 else 1
 
 def show_rules():
-    """Display game rules."""
-    clear_screen()
-    print("=== STICK GAME RULES ===")
-    print("1. The game starts with a pile of sticks.")
-    print("2. Players take turns removing 1, 2, or 3 sticks.")
-    print("3. The player who takes the last stick wins.")
-    print("4. The computer has different difficulty levels:")
-    print("   - Easy: Makes random moves")
-    print("   - Medium: Sometimes makes optimal moves")
-    print("   - Hard: Always makes optimal moves when possible")
-    input("\nPress Enter to return to the main menu...")
+    print("=== NIM GAME RULES ===")
+    print("1. The player will choose how many sticks he want to play with and also the player"
+          "\n can choose the maximum number of sticks to be removed from the pile of sticks.")
+    print("2. The game then will start with a pile of sticks.")
+    print("3. Players take turns removing 1 to the maximum number of sticks chosen by the player.")
+    print("4. The player who takes the last stick wins.")
+
+
+def display_sticks(sticks):
+    x = sticks
+    while x >= 10:
+        x -= 10
+        print("|  " * 10)
+    print("|  " * x)
+
+
+def stick_game():
+    while True:
+        try:
+            sticks = int(input("\nHow many stick you want to play with: "))
+            break
+        except ValueError:
+            print("\nPlease enter a number.")
+    while True:
+        try:
+            max_num_stick = int(input("\nHow many stick you want to be removed when playing the game: "))
+            break
+        except ValueError:
+            print("\nPlease enter a number.")
+    while sticks <= 0:
+        print("\nPlease insert a valid number of stick which is greater than 0 or positive number.\n")
+        stick_game()
+    print(f"\nThere are {sticks} sticks:")
+    display_sticks(sticks)
+    print(f"\nChoose the number of sticks you want to remove.\nYou can only move 1 - {max_num_stick} sticks\n")
+    choice = input("Do you want to go first, say yes or no: ")
+    while sticks != 0:
+        if choice.lower()[0] == "y":
+            human = int(input("How many sticks you want to remove: "))
+            while 0 >= human or human > max_num_stick or human > sticks:
+                print(f"\nPlease insert valid integer which is in the range of 1 - {max_num_stick}. "
+                      "\nAnd also you can't take sticks that are not available.")
+                human = int(input("How many sticks you want to remove: "))
+            sticks -= human
+            if sticks == 0:
+                print("\n" + "|" + "-" * 40 + "|")
+                print("|{:^39}|".format("🎉 CONGRATULATION YOU WIN 🎉"))
+                print(f"|" + "-" * 40 + "|")
+                print("|{:^40}|".format("Well played!!"))
+                print("|" + "_" * 40 + "|")
+                break
+            print(f"\nThere are {sticks} sticks:")
+            display_sticks(sticks)
+            if sticks % (max_num_stick + 1) == 0:
+                computer = random.randrange(1, (max_num_stick + 1))
+            else:
+                computer = sticks % (max_num_stick + 1)
+            print(f"\nOk the computer choose {computer}")
+            sticks -= computer
+            if sticks == 0:
+                print("\n" + "|" + "-" * 40 + "|")
+                print("|{:^40}|".format("UNFORTUNATELY YOU LOST"))
+                print("|" + "-" * 40 + "|")
+                print("|{:^40}|".format("NEVER GIVE UP!!"))
+                print("|" + "_" * 40 + "|")
+                break
+            print(f"\nThere are {sticks} sticks:")
+            display_sticks(sticks)
+        else:
+            if sticks % (max_num_stick + 1) == 0:
+                computer = random.randrange(1, (max_num_stick + 1))
+            else:
+                computer = sticks % (max_num_stick + 1)
+            print(f"\nOk the computer choose {computer}")
+            sticks -= computer
+            if sticks == 0:
+                print("\n" + "|" + "-" * 40 + "|")
+                print("|{:^40}|".format("UNFORTUNATELY YOU LOST"))
+                print("|" + "-" * 40 + "|")
+                print("|{:^40}|".format("NEVER GIVE UP!!"))
+                print("|" + "_" * 40 + "|")
+                break
+            print(f"\nThere are {sticks} sticks:")
+            display_sticks(sticks)
+            human = int(input("How many sticks you want to remove: "))
+            while 0 >= human or human > max_num_stick or human > sticks:
+                print("\nPlease insert valid integer which is in the range of 1 - 3. "
+                      "\nAnd also you can't take sticks that are not available.")
+                human = int(input("How many sticks you want to remove: "))
+            sticks -= human
+            if sticks == 0:
+                print("\n" + "|" + "-" * 40 + "|")
+                print("|{:^39}|".format("🎉 CONGRATULATION YOU WIN 🎉"))
+                print("|" + "-" * 40 + "|")
+                print("|{:^40}|".format("Well played!!"))
+                print("|" + "_" * 40 + "|")
+                break
+            print(f"\nThere are {sticks} sticks:")
+            display_sticks(sticks)
+    main()
+
+
+def stick_game_with_friend():
+    while True:
+        try:
+            sticks = int(input("\nHow many stick you want to play with: "))
+            break
+        except ValueError:
+            print("Please enter a number.")
+    while True:
+        try:
+            max_num_stick = int(input("\nHow many stick you want to be removed when playing the game: "))
+            break
+        except ValueError:
+            print("\nPlease enter a number.")
+    while sticks <= 0:
+        print("\nPlease insert a valid number of stick which is greater than 0 or positive number.")
+        stick_game()
+    print(f"\nThere are {sticks} sticks:")
+    x = sticks
+    while x >= 10:
+        x -= 10
+        print("|  " * 10)
+    print("|  " * x)
+    print(f"\nChoose the number of sticks you want to remove.\nYou can only move 1 - {max_num_stick} sticks")
+
+    while sticks != 0:
+        player1 = int(input("PLAYER1: How many sticks you want to remove: "))
+        while 0 >= player1 or player1 > max_num_stick or player1 > sticks:
+            print(f"\nPlease insert valid integer which is in the range of 1 - {max_num_stick}. "
+                  "\nAnd also you can't take sticks that are not available.")
+            player1 = int(input("PLAYER 1: How many sticks you want to remove: "))
+        sticks -= player1
+        if sticks == 0:
+            print("\n" + "|" + "-" * 40 + "|")
+            print("|{:^39}|".format("🎉 PLAYER 1 WINS 🎉"))
+            print("|" + "-" * 40 + "|")
+            print("|{:^40}|".format("Well played, Player 1!"))
+            print("|" + "_" * 40 + "|")
+            break
+        display_sticks(sticks)
+        player2 = int(input("PLAYER 2: How many sticks you want to remove: "))
+        while 0 >= player2 or player2 > max_num_stick or player2 > sticks:
+            print(f"\nPlease insert valid integer which is in the range of 1 - {max_num_stick}. "
+                  "\nAnd also you can't take sticks that are not available.")
+            player2 = int(input("\nPLAYER1: How many sticks you want to remove: "))
+        sticks -= player2
+        if sticks == 0:
+            print("\n" + "|" + "-" * 40 + "|")
+            print("|{:^39}|".format("🎉 PLAYER 2 WINS 🎉"))
+            print("|" + "-" * 40 + "|")
+            print("|{:^40}|".format("Well played, Player 2!"))
+            print("|" + "_" * 40 + "|")
+            break
+        print(f"\nThere are {sticks} sticks:")
+        display_sticks(sticks)
+    main()
+
 
 def main():
-    """Main game loop."""
-    while True:
-        clear_screen()
-        print("=== STICK GAME ===")
-        print("1. Play against Computer")
-        print("2. Play against Friend")
-        print("3. Game Rules")
-        print("4. Exit")
-        
-        choice = input("\nEnter your choice (1-4): ").strip()
-        
-        if choice == "1":
-            play_with_computer()
-        elif choice == "2":
-            play_with_friend()
-        elif choice == "3":
-            show_rules()
-        elif choice == "4":
-            print("\nGoodbye! 👋")
-            break
-        else:
-            print("Invalid choice. Please enter a number between 1 and 4.")
-            continue
-        
-        if choice in ["1", "2"]:
-            again = input("\nDo you want to play again? (yes/no): ").strip().lower()
-            if not again.startswith("y"):
-                print("\nGoodbye! 👋")
-                break
+    print("=== STICK GAME ===")
+    print("1. Play against Computer")
+    print("2. Play against Friend")
+    print("3. Game Rules")
+    print("4. Exit")
+    co = input("\nEnter your choice (1-4): ")
+    if co == "1":
+        stick_game()
+    elif co == "2":
+        stick_game_with_friend()
+    elif co == "3":
+        show_rules()
+    elif co == "4":
+        print("Goodbye! 👋")
+    else:
+        print("Invalid choice. Please enter a number between 1 and 4.")
+        main()
 
-if __name__ == "__main__":
-    main()
+
+main()
